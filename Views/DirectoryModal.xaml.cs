@@ -1,4 +1,4 @@
-﻿using axion.ViewModels;
+﻿using axion.ViewModels.Modals;
 
 namespace axion.Views;
 

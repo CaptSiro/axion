@@ -35,8 +35,12 @@
                 <!-- Buttons at bottom -->
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="4" HorizontalAlignment="Center">
                     <Button Content="New" Margin="4,0" Width="60" />
-                    <Button Content="Edit" Margin="4,0" Width="60" />
-                    <Button Content="Delete" Margin="4,0" Width="60" />
+                    <Button
+                        Command="{Binding EntryRename}"
+                        Content="Rename" Margin="4,0" Width="60" />
+                    <Button
+                        Command="{Binding EntryDelete}"
+                        Content="Delete" Margin="4,0" Width="60" />
                 </StackPanel>
 
                 <!-- List of selectable items -->
@@ -44,6 +48,7 @@
                     <ListBox
                         ItemsSource="{Binding Entries}"
                         SelectedItem="{Binding SelectedEntry}"
+                        DisplayMemberPath="EntryName"
                         Margin="4" />
                 </ScrollViewer>
             </DockPanel>

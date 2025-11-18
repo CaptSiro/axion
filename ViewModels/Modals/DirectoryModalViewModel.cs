@@ -2,7 +2,7 @@
 using axion.Utils;
 using Microsoft.Win32;
 
-namespace axion.ViewModels;
+namespace axion.ViewModels.Modals;
 
 public class DirectoryModalViewModel : ViewModel
 {

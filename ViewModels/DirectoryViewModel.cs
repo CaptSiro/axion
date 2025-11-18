@@ -32,4 +32,10 @@ public class DirectoryViewModel : ViewModel, IEntry
         get => EntryPath;
         set => EntryPath = value;
     }
+
+
+
+    public void Rename(string name)
+    {
+    }
 }

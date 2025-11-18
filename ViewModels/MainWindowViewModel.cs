@@ -26,7 +26,6 @@ public class MainWindowViewModel : ViewModel
     }
 
 
-
     private RelayCommand<Window>? _selectDirectory;
 
     public RelayCommand<Window> SelectDirectory
@@ -34,8 +33,12 @@ public class MainWindowViewModel : ViewModel
         get { return _selectDirectory ??= new RelayCommand<Window>(SelectDirectoryCommand, _ => true); }
     }
 
-    public ObservableCollection<IEntry> Entries { get; set; } = [];
+
+    #region ENTRIES
+
+    public ObservableCollection<IEntry> Entries { get; } = [];
     private IEntry? _selectedEntry;
+
     public IEntry? SelectedEntry
     {
         get => _selectedEntry;
@@ -43,12 +46,51 @@ public class MainWindowViewModel : ViewModel
     }
 
     private string? _loadedDirectoryName;
+
     public string? LoadedDirectoryName
     {
         get => _loadedDirectoryName;
-        set => SetProperty(ref _loadedDirectoryName, value);
+        private set => SetProperty(ref _loadedDirectoryName, value);
     }
 
+    private RelayCommand<Window>? _entryRename;
+
+    public RelayCommand<Window> EntryRename
+    {
+        get { return _entryRename ??= new RelayCommand<Window>(EntryRenameCommand, _ => SelectedEntry != null); }
+    }
+
+    private void EntryRenameCommand(Window window)
+    {
+        if (SelectedEntry == null)
+        {
+            return;
+        }
+
+        var name = RenameModal.Rename(SelectedEntry.EntryName, window);
+        SelectedEntry.Rename(name);
+    }
+
+    private RelayCommand? _entryDelete;
+
+    public RelayCommand EntryDelete
+    {
+        get { return _entryDelete ??= new RelayCommand(EntryDeleteCommand, _ => SelectedEntry != null); }
+    }
+
+    private void EntryDeleteCommand(object? o)
+    {
+        if (SelectedEntry == null)
+        {
+            return;
+        }
+
+        // todo
+        //  ask for deletion
+        Entries.Remove(SelectedEntry);
+    }
+
+    #endregion
 
 
     public void OnLoad(Window window)
@@ -76,7 +118,7 @@ public class MainWindowViewModel : ViewModel
 
         foreach (var file in Directory.GetFiles(path))
         {
-            Entries.Add(new FileViewModel
+            Entries.Add(new TimerViewModel
             {
                 EntryName = file,
                 EntryPath = Path.Join(path, file)

@@ -2,7 +2,7 @@
 
 namespace axion.ViewModels;
 
-public class FileViewModel : ViewModel, IEntry
+public class TimerViewModel : ViewModel, IEntry
 {
     private string _name = "";
 
@@ -31,5 +31,11 @@ public class FileViewModel : ViewModel, IEntry
     {
         get => EntryPath;
         set => EntryPath = value;
+    }
+
+
+
+    public void Rename(string name)
+    {
     }
 }
