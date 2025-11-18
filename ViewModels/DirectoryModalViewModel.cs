@@ -4,7 +4,7 @@ using Microsoft.Win32;
 
 namespace axion.ViewModels;
 
-public class DirectoryModalViewModel : ViewModelBase
+public class DirectoryModalViewModel : ViewModel
 {
     private string? _selectedPath;
     public string? SelectedPath

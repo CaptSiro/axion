@@ -9,9 +9,13 @@ namespace axion.Views;
 /// </summary>
 public partial class MainWindow : Window
 {
+    public MainWindowViewModel ViewModel { get; }
+
     public MainWindow()
     {
         InitializeComponent();
+        ViewModel = new MainWindowViewModel();
+        DataContext = ViewModel;
     }
 
 
@@ -27,5 +31,7 @@ public partial class MainWindow : Window
         {
             Application.Current.Shutdown();
         }
+
+        ViewModel.OnLoad(this);
     }
 }

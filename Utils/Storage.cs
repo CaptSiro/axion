@@ -28,11 +28,19 @@ public static class Storage
         File.WriteAllText(FilePath, JsonSerializer.Serialize(Cache));
     }
 
-    public static T Get<T>(string key)
+    public static JsonElement? Get(string key)
     {
         return Cache.TryGetValue(key, out var v)
-            ? (T) v
-            : default!;
+            ? (JsonElement) v
+            : null;
+    }
+
+    public static T? Get<T>(string key)
+    {
+        var element = Get(key);
+        return element == null
+            ? default
+            : element.Value.Deserialize<T>();
     }
 
     public static bool Contains(string key)
@@ -44,7 +52,7 @@ public static class Storage
     {
         var result = Cache.TryGetValue(key, out var v);
         value = result
-            ? (T)v!
+            ? ((JsonElement) v!).Deserialize<T>()
             : default!;
 
         return result;

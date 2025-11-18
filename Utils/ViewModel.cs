@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace axion.Utils
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

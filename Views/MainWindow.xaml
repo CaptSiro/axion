@@ -26,7 +26,11 @@
         <Border Grid.Column="0" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1">
             <DockPanel LastChildFill="True">
                 <!-- Folder name header -->
-                <TextBlock Text="Folder Name" FontWeight="Bold" Padding="8" DockPanel.Dock="Top" />
+                <TextBlock
+                    Text="{Binding LoadedDirectoryName}"
+                    FontWeight="Bold"
+                    Padding="8"
+                    DockPanel.Dock="Top" />
 
                 <!-- Buttons at bottom -->
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="4" HorizontalAlignment="Center">
@@ -37,11 +41,10 @@
 
                 <!-- List of selectable items -->
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ListBox Margin="4">
-                        <ListBoxItem Content="Item 1" />
-                        <ListBoxItem Content="Item 2" />
-                        <ListBoxItem Content="Item 3" />
-                    </ListBox>
+                    <ListBox
+                        ItemsSource="{Binding Entries}"
+                        SelectedItem="{Binding SelectedEntry}"
+                        Margin="4" />
                 </ScrollViewer>
             </DockPanel>
         </Border>
