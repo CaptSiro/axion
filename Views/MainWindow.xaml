@@ -6,7 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:axion.ViewModels"
         mc:Ignorable="d"
-        Title="Axion" Height="450" Width="800">
+        Title="Axion" Height="450" Width="800"
+        Loaded="MainWindow_OnLoaded">
     <Window.DataContext>
         <viewModels:MainWindowViewModel />
     </Window.DataContext>
@@ -29,11 +30,8 @@
 
                 <!-- Buttons at bottom -->
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="4" HorizontalAlignment="Center">
-                    <Button
-                        Command="{Binding SelectDirectory}"
-                        CommandParameter="{Binding ElementName=MainWindowWindow}"
-                        Content="Edit" Margin="4,0" Width="60" />
                     <Button Content="New" Margin="4,0" Width="60" />
+                    <Button Content="Edit" Margin="4,0" Width="60" />
                     <Button Content="Delete" Margin="4,0" Width="60" />
                 </StackPanel>
 

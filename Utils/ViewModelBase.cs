@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace axion.Support
+namespace axion.Utils
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

@@ -1,19 +1,12 @@
 ﻿using System.Windows;
-using axion.Support;
+using axion.Utils;
 using axion.Views;
 
 namespace axion.ViewModels;
 
 public class MainWindowViewModel
 {
-    private RelayCommand<Window>? _selectDirectory;
-
-    public RelayCommand<Window> SelectDirectory
-    {
-        get { return _selectDirectory ??= new RelayCommand<Window>(SelectDirectoryCommand, _ => true); }
-    }
-
-    private static void SelectDirectoryCommand(Window window)
+    public static void SelectDirectoryCommand(Window window)
     {
         var modal = new DirectoryModal { Owner = window };
         if (modal.ShowDialog() != true)
@@ -22,6 +15,20 @@ public class MainWindowViewModel
         }
 
         var path = modal.ViewModel.SelectedPath;
-        Console.WriteLine(path);
+        if (path == null)
+        {
+            return;
+        }
+
+        Storage.Set(Constants.KeyPath, path);
+    }
+
+
+
+    private RelayCommand<Window>? _selectDirectory;
+
+    public RelayCommand<Window> SelectDirectory
+    {
+        get { return _selectDirectory ??= new RelayCommand<Window>(SelectDirectoryCommand, _ => true); }
     }
 }

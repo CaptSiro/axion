@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace axion.Support
+namespace axion.Utils
 {
     public class RelayCommand(Action<object?> execute, Predicate<object?>? canExecute = null) : ICommand
     {
@@ -23,6 +23,8 @@ namespace axion.Support
             _execute(parameter);
         }
     }
+
+
 
     public class RelayCommand<T>(Action<T> execute, Predicate<T>? canExecute = null) : ICommand
     {
