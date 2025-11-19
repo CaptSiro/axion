@@ -25,7 +25,7 @@
             <DockPanel>
                 <TextBox
                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                    IsReadOnly="True" Width="300" />
+                    Width="300" />
             </DockPanel>
         </StackPanel>
 

@@ -23,7 +23,7 @@ public class DirectoryModalViewModel : ViewModel
         get { return _browse ??= new RelayCommand(BrowseCommand, _ => true); }
     }
 
-    public void BrowseCommand(object? obj)
+    private void BrowseCommand(object? obj)
     {
         var dialog = new OpenFolderDialog();
         var result = dialog.ShowDialog();
@@ -33,7 +33,6 @@ public class DirectoryModalViewModel : ViewModel
         }
 
         SelectedPath = dialog.FolderName;
-        Console.WriteLine(SelectedPath);
     }
 
 

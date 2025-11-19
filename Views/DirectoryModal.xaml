@@ -21,7 +21,6 @@
         </Grid.RowDefinitions>
 
         <StackPanel>
-            <TextBlock Text="Select a directory" Margin="0 0 0 8" />
             <DockPanel>
                 <TextBox
                     Text="{Binding SelectedPath, UpdateSourceTrigger=PropertyChanged}"

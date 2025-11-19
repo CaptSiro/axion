@@ -34,12 +34,17 @@
 
                 <!-- Buttons at bottom -->
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="4" HorizontalAlignment="Center">
-                    <Button Content="New" Margin="4,0" Width="60" />
+                    <Button
+                        Command="{Binding EntryNew}"
+                        CommandParameter="{Binding ElementName=MainWindowWindow}"
+                        Content="New" Margin="4,0" Width="60" />
                     <Button
                         Command="{Binding EntryRename}"
+                        CommandParameter="{Binding ElementName=MainWindowWindow}"
                         Content="Rename" Margin="4,0" Width="60" />
                     <Button
                         Command="{Binding EntryDelete}"
+                        CommandParameter="{Binding ElementName=MainWindowWindow}"
                         Content="Delete" Margin="4,0" Width="60" />
                 </StackPanel>
 

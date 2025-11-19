@@ -3,38 +3,14 @@ using System.IO;
 using System.Windows;
 using axion.Utils;
 using axion.Views;
+using axion.Views.Modals.CreateEntryModal;
+using axion.Views.Modals.WizardSteps.SelectEntryTypeStep;
 
 namespace axion.ViewModels;
 
 public class MainWindowViewModel : ViewModel
 {
-    public static void SelectDirectoryCommand(Window window)
-    {
-        var modal = new DirectoryModal { Owner = window };
-        if (modal.ShowDialog() != true)
-        {
-            return;
-        }
-
-        var path = modal.ViewModel.SelectedPath;
-        if (path == null)
-        {
-            return;
-        }
-
-        Storage.Set(Constants.KeyPath, path);
-    }
-
-
-    private RelayCommand<Window>? _selectDirectory;
-
-    public RelayCommand<Window> SelectDirectory
-    {
-        get { return _selectDirectory ??= new RelayCommand<Window>(SelectDirectoryCommand, _ => true); }
-    }
-
-
-    #region ENTRIES
+    #region PROPERTIES
 
     public ObservableCollection<IEntry> Entries { get; } = [];
     private IEntry? _selectedEntry;
@@ -53,12 +29,61 @@ public class MainWindowViewModel : ViewModel
         private set => SetProperty(ref _loadedDirectoryName, value);
     }
 
-    private RelayCommand<Window>? _entryRename;
+    private DirectoryViewModel? _loadedDirectory;
 
-    public RelayCommand<Window> EntryRename
+    public DirectoryViewModel? LoadedDirectory
     {
-        get { return _entryRename ??= new RelayCommand<Window>(EntryRenameCommand, _ => SelectedEntry != null); }
+        get => _loadedDirectory;
+        private set => SetProperty(ref _loadedDirectory, value);
     }
+
+    public string CurrentPath
+    {
+        get {
+            var projectPath = Storage.Get<string>(Constants.KeyProjectPath);
+            if (projectPath == null)
+            {
+                return "";
+            }
+
+            return LoadedDirectory != null
+                ? Path.Join(projectPath, LoadedDirectory.EntryPath)
+                : projectPath;
+        }
+    }
+
+    #endregion
+
+
+    #region COMMANDS
+
+    private RelayCommand<Window>? _entryNew;
+    public RelayCommand<Window> EntryNew => _entryNew ??= new RelayCommand<Window>(
+        EntryNewCommand, _ => true);
+
+    private void EntryNewCommand(Window window)
+    {
+        var projectPath = Storage.Get<string>(Constants.KeyProjectPath);
+        if (projectPath == null)
+        {
+            return;
+        }
+
+        var path = LoadedDirectory != null
+            ? Path.Join(projectPath, LoadedDirectory.EntryPath)
+            : projectPath;
+
+        var modal = new CreateEntryModal(new SelectEntryTypeStep(path)) { Owner = window };
+        if (modal.ShowDialog() == true)
+        {
+            Load(CurrentPath);
+        }
+    }
+
+
+    private RelayCommand<Window>? _entryRename;
+    public RelayCommand<Window> EntryRename => _entryRename ??= new RelayCommand<Window>(
+        EntryRenameCommand, _ => SelectedEntry != null);
 
     private void EntryRenameCommand(Window window)
     {
@@ -70,6 +95,7 @@ public class MainWindowViewModel : ViewModel
         var name = RenameModal.Rename(SelectedEntry.EntryName, window);
         SelectedEntry.Rename(name);
     }
+
 
     private RelayCommand? _entryDelete;
 
@@ -85,9 +111,17 @@ public class MainWindowViewModel : ViewModel
             return;
         }
 
-        // todo
-        //  ask for deletion
-        Entries.Remove(SelectedEntry);
+        var result = MessageBox.Show(
+            $"Do you want to delete {SelectedEntry.EntryName}?",
+            "Confirm Delete",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning
+        );
+
+        if (result == MessageBoxResult.Yes)
+        {
+            Entries.Remove(SelectedEntry);
+        }
     }
 
     #endregion
@@ -95,7 +129,7 @@ public class MainWindowViewModel : ViewModel
 
     public void OnLoad(Window window)
     {
-        Load(Storage.Get<string>(Constants.KeyPath));
+        Load(Storage.Get<string>(Constants.KeyProjectPath));
     }
 
     private void Load(string? path)
@@ -111,8 +145,8 @@ public class MainWindowViewModel : ViewModel
         {
             Entries.Add(new DirectoryViewModel
             {
-                EntryName = dir,
-                EntryPath = Path.Join(path, dir)
+                EntryName = Path.GetFileName(dir),
+                EntryPath = dir
             });
         }
 
@@ -120,8 +154,8 @@ public class MainWindowViewModel : ViewModel
         {
             Entries.Add(new TimerViewModel
             {
-                EntryName = file,
-                EntryPath = Path.Join(path, file)
+                EntryName = Path.GetFileName(file),
+                EntryPath = file
             });
         }
 

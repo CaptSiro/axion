@@ -2,5 +2,5 @@
 
 public static class Constants
 {
-    public const string KeyPath = "path";
+    public const string KeyProjectPath = "path";
 }

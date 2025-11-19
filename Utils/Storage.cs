@@ -9,28 +9,38 @@ public static class Storage
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "axion.json");
 
-    private static readonly Dictionary<string, object> Cache;
+    private static Dictionary<string, object> _cache;
 
 
 
     static Storage()
     {
-        Cache = File.Exists(FilePath)
+        _cache = ReadFile();
+
+        Console.WriteLine();
+        Console.WriteLine(FilePath);
+        Console.WriteLine();
+    }
+
+
+
+    private static Dictionary<string, object> ReadFile()
+    {
+        return File.Exists(FilePath)
             ? JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(FilePath))!
             : new Dictionary<string, object>();
     }
 
-
-
     public static void Set(string key, object value)
     {
-        Cache[key] = value;
-        File.WriteAllText(FilePath, JsonSerializer.Serialize(Cache));
+        _cache[key] = value;
+        File.WriteAllText(FilePath, JsonSerializer.Serialize(_cache));
+        _cache = ReadFile();
     }
 
-    public static JsonElement? Get(string key)
+    private static JsonElement? Get(string key)
     {
-        return Cache.TryGetValue(key, out var v)
+        return _cache.TryGetValue(key, out var v)
             ? (JsonElement) v
             : null;
     }
@@ -45,12 +55,12 @@ public static class Storage
 
     public static bool Contains(string key)
     {
-        return Cache.ContainsKey(key);
+        return _cache.ContainsKey(key);
     }
 
     public static bool TryGet<T>(string key, out T? value)
     {
-        var result = Cache.TryGetValue(key, out var v);
+        var result = _cache.TryGetValue(key, out var v);
         value = result
             ? ((JsonElement) v!).Deserialize<T>()
             : default!;

@@ -9,7 +9,7 @@ namespace axion.Views;
 /// </summary>
 public partial class MainWindow : Window
 {
-    public MainWindowViewModel ViewModel { get; }
+    private MainWindowViewModel ViewModel { get; }
 
     public MainWindow()
     {
@@ -22,16 +22,24 @@ public partial class MainWindow : Window
 
     private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (!Storage.Contains(Constants.KeyPath))
+        GetProjectPath();
+        ViewModel.OnLoad(this);
+    }
+
+    private void GetProjectPath()
+    {
+        if (Storage.Contains(Constants.KeyProjectPath))
         {
-            MainWindowViewModel.SelectDirectoryCommand(this);
+            return;
         }
 
-        if (!Storage.Contains(Constants.KeyPath))
+        var path = DirectoryModal.SelectDirectory(this);
+        if (path == null)
         {
             Application.Current.Shutdown();
+            return;
         }
 
-        ViewModel.OnLoad(this);
+        Storage.Set(Constants.KeyProjectPath, path);
     }
 }
