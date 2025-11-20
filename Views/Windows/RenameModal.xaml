@@ -1,0 +1,43 @@
+﻿<Window x:Class="axion.Views.Modals.RenameModal"
+        x:Name="RenameModalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:windows="clr-namespace:axion.Views.Windows"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        Title="Rename">
+    <Window.DataContext>
+        <windows:RenameModalViewModel />
+    </Window.DataContext>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Text="{Binding Label}" Margin="0 0 0 8" />
+            <DockPanel>
+                <TextBox
+                    Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                    Width="300" />
+            </DockPanel>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 12 0 0">
+            <Button
+                Command="{Binding Ok}"
+                CommandParameter="{Binding ElementName=RenameModalWindow}"
+                Content="OK" Width="70" Margin="0 0 8 0" IsDefault="True" />
+            <Button
+                Command="{Binding Cancel}"
+                CommandParameter="{Binding ElementName=RenameModalWindow}"
+                Content="Cancel" Width="70" IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</Window>
