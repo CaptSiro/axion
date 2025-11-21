@@ -1,39 +1,60 @@
-﻿namespace axion.Views.Components;
+﻿using System.IO;
+
+namespace axion.Views.Components;
 
 public class TimerViewModel : ViewModel, IEntry
 {
     private string _name = "";
 
-    public string EntryName
+    public string Name
     {
         get => _name;
         set => SetProperty(ref _name, value);
     }
 
-    public string Name
+    public string EntryName
     {
-        get => EntryName;
-        set => EntryName = value;
+        get => System.IO.Path.GetFileNameWithoutExtension(Name);
+        set => Name = value;
     }
 
 
     private string _path = "";
 
-    public string EntryPath
+    public string Path
     {
         get => _path;
         set => SetProperty(ref _path, value);
     }
 
-    public string Path
+    public string EntryPath
     {
-        get => EntryPath;
-        set => EntryPath = value;
+        get => Path;
+        set => Path = value;
+    }
+
+
+
+    public TimerViewModel()
+    {
+    }
+
+    public TimerViewModel(string file) : this()
+    {
+        EntryPath = file;
+        EntryName = System.IO.Path.GetFileName(file);
     }
 
 
 
     public void Rename(string name)
     {
+        var parent = Directory.GetParent(EntryPath);
+        if (parent == null)
+        {
+            return;
+        }
+
+        File.Move(EntryPath, System.IO.Path.Join(parent.ToString(), name + ".txt"));
     }
 }

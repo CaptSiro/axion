@@ -26,11 +26,15 @@
         <Border Grid.Column="0" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1">
             <DockPanel LastChildFill="True">
                 <!-- Folder name header -->
-                <TextBlock
-                    Text="{Binding LoadedDirectoryName}"
-                    FontWeight="Bold"
-                    Padding="8"
-                    DockPanel.Dock="Top" />
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="4" VerticalAlignment="Center">
+                    <Button
+                        Content="Back" Width="60" Margin="4,0" />
+                    <TextBlock
+                        Text="{Binding LoadedDirectoryName}"
+                        FontWeight="Bold"
+                        Padding="8"
+                        DockPanel.Dock="Top" />
+                </StackPanel>
 
                 <!-- Buttons at bottom -->
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="4" HorizontalAlignment="Center">

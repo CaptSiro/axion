@@ -94,6 +94,7 @@ public class MainWindowViewModel : ViewModel
 
         var name = RenameModal.Rename(SelectedEntry.EntryName, window);
         SelectedEntry.Rename(name);
+        Load(CurrentPath);
     }
 
 
@@ -143,11 +144,7 @@ public class MainWindowViewModel : ViewModel
 
         foreach (var dir in Directory.GetDirectories(path))
         {
-            Entries.Add(new DirectoryViewModel
-            {
-                EntryName = Path.GetFileName(dir),
-                EntryPath = dir
-            });
+            Entries.Add(new DirectoryViewModel(dir));
         }
 
         foreach (var file in Directory.GetFiles(path))
