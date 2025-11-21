@@ -50,14 +50,21 @@ public class DirectoryViewModel : ViewModel, IEntry
 
 
 
-    public void Rename(string name)
+    public bool Rename(string name)
     {
         var parent = Directory.GetParent(EntryPath);
         if (parent == null)
         {
-            return;
+            return false;
         }
 
         Directory.Move(EntryPath, System.IO.Path.Join(parent.ToString(), name));
+        return true;
+    }
+
+    public bool Delete()
+    {
+        Directory.Delete(EntryPath, true);
+        return true;
     }
 }

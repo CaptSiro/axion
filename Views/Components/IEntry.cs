@@ -8,5 +8,6 @@ public interface IEntry
 
 
 
-    public void Rename(string name);
+    public bool Rename(string name);
+    public bool Delete();
 }

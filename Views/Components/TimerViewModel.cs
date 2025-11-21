@@ -47,14 +47,21 @@ public class TimerViewModel : ViewModel, IEntry
 
 
 
-    public void Rename(string name)
+    public bool Rename(string name)
     {
         var parent = Directory.GetParent(EntryPath);
         if (parent == null)
         {
-            return;
+            return false;
         }
 
         File.Move(EntryPath, System.IO.Path.Join(parent.ToString(), name + ".txt"));
+        return true;
+    }
+
+    public bool Delete()
+    {
+        File.Delete(EntryPath);
+        return true;
     }
 }

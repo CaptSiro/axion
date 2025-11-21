@@ -1,5 +1,8 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using axion.Utils;
+using axion.Views.Components;
 using axion.Views.Modals;
 
 namespace axion.Views.Windows;
@@ -41,5 +44,13 @@ public partial class MainWindow : Window
         }
 
         Storage.Set(Constants.KeyProjectPath, path);
+    }
+
+    private void ListBoxItem_DoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is ListBoxItem { DataContext: DirectoryViewModel dir })
+        {
+            ViewModel.Load(dir);
+        }
     }
 }

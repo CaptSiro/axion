@@ -5,12 +5,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:windows="clr-namespace:axion.Views.Windows"
+        xmlns:local="clr-namespace:axion.Views.Components"
         mc:Ignorable="d"
         Title="Axion" Height="450" Width="800"
         Loaded="MainWindow_OnLoaded">
     <Window.DataContext>
         <windows:MainWindowViewModel />
     </Window.DataContext>
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    </Window.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -26,14 +31,17 @@
         <Border Grid.Column="0" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1">
             <DockPanel LastChildFill="True">
                 <!-- Folder name header -->
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="4" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="8" VerticalAlignment="Center">
                     <Button
-                        Content="Back" Width="60" Margin="4,0" />
+                        Command="{Binding Back}"
+                        Visibility="{Binding CanGoBack, Converter={StaticResource BoolToVisibility}}"
+                        Content="&lt;"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="4 0"/>
                     <TextBlock
                         Text="{Binding LoadedDirectoryName}"
-                        FontWeight="Bold"
-                        Padding="8"
-                        DockPanel.Dock="Top" />
+                        FontWeight="Bold" Margin="4 0 0 0" />
                 </StackPanel>
 
                 <!-- Buttons at bottom -->
@@ -41,15 +49,15 @@
                     <Button
                         Command="{Binding EntryNew}"
                         CommandParameter="{Binding ElementName=MainWindowWindow}"
-                        Content="New" Margin="4,0" Width="60" />
+                        Content="New" Margin="4,0" Width="50" />
                     <Button
                         Command="{Binding EntryRename}"
                         CommandParameter="{Binding ElementName=MainWindowWindow}"
-                        Content="Rename" Margin="4,0" Width="60" />
+                        Content="Rename" Margin="4,0" Width="50" />
                     <Button
                         Command="{Binding EntryDelete}"
                         CommandParameter="{Binding ElementName=MainWindowWindow}"
-                        Content="Delete" Margin="4,0" Width="60" />
+                        Content="Delete" Margin="4,0" Width="50" />
                 </StackPanel>
 
                 <!-- List of selectable items -->
@@ -57,8 +65,29 @@
                     <ListBox
                         ItemsSource="{Binding Entries}"
                         SelectedItem="{Binding SelectedEntry}"
-                        DisplayMemberPath="EntryName"
-                        Margin="4" />
+                        Margin="4">
+                        <ListBox.Resources>
+                            <Style TargetType="ListBoxItem">
+                                <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_DoubleClick" />
+                            </Style>
+
+                            <!-- Directory item template -->
+                            <DataTemplate DataType="{x:Type local:DirectoryViewModel}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="📁" Margin="0,0,6,0" />
+                                    <TextBlock Text="{Binding EntryName}" />
+                                </StackPanel>
+                            </DataTemplate>
+
+                            <!-- Timer item template -->
+                            <DataTemplate DataType="{x:Type local:TimerViewModel}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="⏱" Margin="0,0,6,0" />
+                                    <TextBlock Text="{Binding EntryName}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.Resources>
+                    </ListBox>
                 </ScrollViewer>
             </DockPanel>
         </Border>
@@ -135,8 +164,8 @@
 
                 <!-- Bottom controls -->
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="4" HorizontalAlignment="Center">
-                    <Button Content="▶/⏸" Width="60" Margin="4,0" />
-                    <Button Content="■" Width="60" Margin="4,0" />
+                    <Button Content="▶/⏸" Width="50" Margin="4,0" />
+                    <Button Content="■" Width="50" Margin="4,0" />
                 </StackPanel>
 
                 <!-- List of timers -->

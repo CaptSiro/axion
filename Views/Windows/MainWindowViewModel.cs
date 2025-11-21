@@ -34,7 +34,11 @@ public class MainWindowViewModel : ViewModel
     public DirectoryViewModel? LoadedDirectory
     {
         get => _loadedDirectory;
-        private set => SetProperty(ref _loadedDirectory, value);
+        private set
+        {
+            SetProperty(ref _loadedDirectory, value);
+            OnPropertyChanged(nameof(CanGoBack));
+        }
     }
 
     public string CurrentPath
@@ -47,7 +51,7 @@ public class MainWindowViewModel : ViewModel
             }
 
             return LoadedDirectory != null
-                ? Path.Join(projectPath, LoadedDirectory.EntryPath)
+                ? LoadedDirectory.EntryPath
                 : projectPath;
         }
     }
@@ -56,6 +60,23 @@ public class MainWindowViewModel : ViewModel
 
 
     #region COMMANDS
+
+    private RelayCommand? _back;
+    public RelayCommand Back => _back ??= new RelayCommand(
+        BackCommand, _ => CanGoBack);
+
+    private void BackCommand(object? obj)
+    {
+        if (LoadedDirectory == null)
+        {
+            return;
+        }
+
+        Load(LoadedDirectory.Parent);
+    }
+
+    public bool CanGoBack => LoadedDirectory != null;
+
 
     private RelayCommand<Window>? _entryNew;
     public RelayCommand<Window> EntryNew => _entryNew ??= new RelayCommand<Window>(
@@ -70,13 +91,14 @@ public class MainWindowViewModel : ViewModel
         }
 
         var path = LoadedDirectory != null
-            ? Path.Join(projectPath, LoadedDirectory.EntryPath)
+            ? LoadedDirectory.EntryPath
             : projectPath;
 
         var modal = new CreateEntryModal(new SelectEntryTypeStep(path)) { Owner = window };
-        if (modal.ShowDialog() == true)
+        var result = modal.ShowDialog();
+        if (result == true)
         {
-            Load(CurrentPath);
+            Reload();
         }
     }
 
@@ -93,8 +115,10 @@ public class MainWindowViewModel : ViewModel
         }
 
         var name = RenameModal.Rename(SelectedEntry.EntryName, window);
-        SelectedEntry.Rename(name);
-        Load(CurrentPath);
+        if (SelectedEntry.Rename(name))
+        {
+            Reload();
+        }
     }
 
 
@@ -119,10 +143,13 @@ public class MainWindowViewModel : ViewModel
             MessageBoxImage.Warning
         );
 
-        if (result == MessageBoxResult.Yes)
+        if (result != MessageBoxResult.Yes)
         {
-            Entries.Remove(SelectedEntry);
+            return;
         }
+
+        SelectedEntry.Delete();
+        Entries.Remove(SelectedEntry);
     }
 
     #endregion
@@ -135,9 +162,15 @@ public class MainWindowViewModel : ViewModel
 
     private void Load(string? path)
     {
-        if (path == null || !Directory.Exists(path))
+        var projectPath = Storage.Get<string>(Constants.KeyProjectPath);
+        if (path == null || projectPath == null || !Directory.Exists(path))
         {
             return;
+        }
+
+        if (Path.GetFullPath(projectPath) == Path.GetFullPath(path))
+        {
+            LoadedDirectory = null;
         }
 
         Entries.Clear();
@@ -157,5 +190,16 @@ public class MainWindowViewModel : ViewModel
         }
 
         LoadedDirectoryName = Path.GetFileName(path);
+    }
+
+    private void Reload()
+    {
+        Load(CurrentPath);
+    }
+
+    public void Load(DirectoryViewModel directory)
+    {
+        LoadedDirectory = directory;
+        Load(directory.EntryPath);
     }
 }
