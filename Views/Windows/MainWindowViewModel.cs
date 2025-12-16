@@ -12,6 +12,15 @@ public class MainWindowViewModel : ViewModel
 {
     #region PROPERTIES
 
+    public ObservableCollection<TimerDisplayViewModel> Timers { get; } = [];
+
+    private TimerDisplayViewModel? _selectedTimer;
+    public TimerDisplayViewModel? SelectedTimer
+    {
+        get => _selectedTimer;
+        set => SetProperty(ref _selectedTimer, value);
+    }
+
     public ObservableCollection<IEntry> Entries { get; } = [];
     private IEntry? _selectedEntry;
 
@@ -124,10 +133,8 @@ public class MainWindowViewModel : ViewModel
 
     private RelayCommand? _entryDelete;
 
-    public RelayCommand EntryDelete
-    {
-        get { return _entryDelete ??= new RelayCommand(EntryDeleteCommand, _ => SelectedEntry != null); }
-    }
+    public RelayCommand EntryDelete =>
+        _entryDelete ??= new RelayCommand(EntryDeleteCommand, _ => SelectedEntry != null);
 
     private void EntryDeleteCommand(object? o)
     {
@@ -152,8 +159,42 @@ public class MainWindowViewModel : ViewModel
         Entries.Remove(SelectedEntry);
     }
 
+
+    private RelayCommand? _timerToggle;
+
+    public RelayCommand TimerToggle =>
+        _timerToggle ??= new RelayCommand(TimerToggleCommand, _ => SelectedTimer != null);
+
+    private void TimerToggleCommand(object? obj)
+    {
+        SelectedTimer!.Toggle();
+    }
+
+
+    private RelayCommand? _timerRemove;
+
+    public RelayCommand TimerRemove =>
+        _timerRemove ??= new RelayCommand(TimerRemoveCommand, _ => SelectedTimer != null);
+
+    private void TimerRemoveCommand(object? obj)
+    {
+        Timers.Remove(SelectedTimer!);
+    }
+
     #endregion
 
+
+
+    public void AddTimerDisplay(TimerDisplayViewModel timer)
+    {
+        if (Timers.All(x => x.TimerViewModel.Path != timer.TimerViewModel.Path))
+        {
+            Timers.Add(timer);
+            timer.Play();
+        }
+
+        SelectedTimer = timer;
+    }
 
     public void OnLoad(Window window)
     {

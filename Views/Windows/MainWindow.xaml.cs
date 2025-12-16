@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using axion.Utils;
 using axion.Views.Components;
 using axion.Views.Modals;
@@ -12,13 +13,22 @@ namespace axion.Views.Windows;
 /// </summary>
 public partial class MainWindow : Window
 {
+    private readonly DispatcherTimer _timer;
     private MainWindowViewModel ViewModel { get; }
+
 
     public MainWindow()
     {
         InitializeComponent();
         ViewModel = new MainWindowViewModel();
         DataContext = ViewModel;
+
+        _timer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
+
+        _timer.Start();
     }
 
 
@@ -51,6 +61,11 @@ public partial class MainWindow : Window
         if (sender is ListBoxItem { DataContext: DirectoryViewModel dir })
         {
             ViewModel.Load(dir);
+        }
+
+        if (sender is ListBoxItem { DataContext: TimerViewModel timer })
+        {
+            ViewModel.AddTimerDisplay(new TimerDisplayViewModel(timer, _timer));
         }
     }
 }

@@ -164,16 +164,25 @@
 
                 <!-- Bottom controls -->
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="4" HorizontalAlignment="Center">
-                    <Button Content="▶/⏸" Width="50" Margin="4,0" />
-                    <Button Content="■" Width="50" Margin="4,0" />
+                    <Button
+                        Command="{Binding TimerToggle}"
+                        Content="▶/⏸" Width="50" Margin="4,0" />
+                    <Button
+                        Command="{Binding TimerRemove}"
+                        Content="■" Width="50" Margin="4,0" />
                 </StackPanel>
 
                 <!-- List of timers -->
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ListBox Margin="4">
-                        <ListBoxItem Content="Timer A - 12m04s" />
-                        <ListBoxItem Content="Timer B - 3m19s" />
-                        <ListBoxItem Content="Timer C - 45m55s" />
+                    <ListBox
+                        ItemsSource="{Binding Timers}"
+                        SelectedItem="{Binding SelectedTimer}"
+                        Margin="4">
+                        <ListBox.Resources>
+                            <DataTemplate DataType="{x:Type local:TimerDisplayViewModel}">
+                                <TextBlock Text="{Binding ElapsedTime}" />
+                            </DataTemplate>
+                        </ListBox.Resources>
                     </ListBox>
                 </ScrollViewer>
             </DockPanel>

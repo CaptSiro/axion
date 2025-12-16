@@ -33,6 +33,7 @@ public class TimerViewModel : ViewModel, IEntry
         set => Path = value;
     }
 
+    public TimeSpan Elapsed => TimeSpan.Zero;
 
 
     public TimerViewModel()
