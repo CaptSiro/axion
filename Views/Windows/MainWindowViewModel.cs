@@ -56,12 +56,14 @@ public class MainWindowViewModel : ViewModel
             }
 
             OnPropertyChanged(nameof(SelectedTimerViewModel));
+            OnPropertyChanged(nameof(SelectedDirectoryViewModel));
             OnPropertyChanged(nameof(Sessions));
         }
     }
 
 
     public TimerViewModel? SelectedTimerViewModel => SelectedEntry as TimerViewModel;
+    public DirectoryViewModel? SelectedDirectoryViewModel => SelectedEntry as DirectoryViewModel;
     public ObservableCollection<SessionRecord> Sessions
         => SelectedTimerViewModel?.Sessions ?? [];
 
@@ -286,11 +288,14 @@ public class MainWindowViewModel : ViewModel
 
         foreach (var file in Directory.GetFiles(path))
         {
-            Entries.Add(new TimerViewModel
+            if (TimerViewModel.IsFileTimer(file))
             {
-                EntryName = Path.GetFileName(file),
-                EntryPath = file
-            });
+                Entries.Add(new TimerViewModel
+                {
+                    EntryName = Path.GetFileName(file),
+                    EntryPath = file
+                });
+            }
         }
 
         LoadedDirectoryName = Path.GetFileName(path);

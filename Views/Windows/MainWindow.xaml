@@ -97,6 +97,7 @@
         <!-- Center Panel -->
         <Border Grid.Column="1" Background="#FFFFFF" BorderBrush="Black" BorderThickness="1">
             <Grid>
+                <!-- State 1: None -->
                 <TextBlock
                     x:Name="NoSelectionMessage"
                     Text="Select something to show details"
@@ -120,20 +121,38 @@
                                 <RowDefinition />
                                 <RowDefinition />
                                 <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="Number of items" Grid.Row="0" Grid.Column="0" />
-                            <TextBlock Text="x" Grid.Row="0" Grid.Column="1" Margin="12 0" />
+                            <TextBlock Text="Total time spent" Grid.Row="0" Grid.Column="0" />
+                            <TextBlock
+                                Text="{Binding SelectedEntry.EntryTimeElapsed, FallbackValue=''}"
+                                Grid.Row="0" Grid.Column="1" Margin="12 0" />
 
-                            <TextBlock Text="Average time" Grid.Row="1" Grid.Column="0" />
-                            <TextBlock Text="y" Grid.Row="1" Grid.Column="1" Margin="12 0" />
+                            <TextBlock Text="Number of items" Grid.Row="1" Grid.Column="0" />
+                            <TextBlock
+                                Text="{Binding SelectedDirectoryViewModel.Count, FallbackValue=''}"
+                                Grid.Row="1" Grid.Column="1" Margin="12 0" />
 
-                            <TextBlock Text="Max time" Grid.Row="2" Grid.Column="0" />
-                            <TextBlock Text="z" Grid.Row="2" Grid.Column="1" Margin="12 0" />
+                            <TextBlock Text="Average time" Grid.Row="2" Grid.Column="0" />
+                            <TextBlock
+                                Text="{Binding SelectedDirectoryViewModel.Average, FallbackValue=''}"
+                                Grid.Row="2" Grid.Column="1" Margin="12 0" />
+
+                            <TextBlock Text="Max time" Grid.Row="3" Grid.Column="0" />
+                            <TextBlock
+                                Text="{Binding SelectedDirectoryViewModel.Max, FallbackValue=''}"
+                                Grid.Row="3" Grid.Column="1" Margin="12 0" />
+
+                            <TextBlock Text="Min time" Grid.Row="4" Grid.Column="0" />
+                            <TextBlock
+                                Text="{Binding SelectedDirectoryViewModel.Min, FallbackValue=''}"
+                                Grid.Row="4" Grid.Column="1" Margin="12 0" />
                         </Grid>
                     </ScrollViewer>
                 </StackPanel>
@@ -147,6 +166,18 @@
                         Text="{Binding SelectedEntry.EntryName, FallbackValue=''}"
                         FontSize="16" FontWeight="Bold" Margin="0 0 0 12">
                     </TextBlock>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Total time spent" Grid.Row="0" Grid.Column="0" />
+                        <TextBlock
+                            Text="{Binding SelectedEntry.EntryTimeElapsed, FallbackValue=''}"
+                            Grid.Row="0" Grid.Column="1" Margin="12 0" />
+                    </Grid>
 
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <ListView

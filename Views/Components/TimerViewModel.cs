@@ -8,6 +8,12 @@ public class TimerViewModel() : ViewModel, IEntry
 {
     private const string SeparatorProperty = ": ";
     public const string KeyElapsed = "elapsed";
+    public const string FileExtension = "timer";
+
+    public static bool IsFileTimer(string file)
+    {
+        return System.IO.Path.GetExtension(file) == "." + FileExtension;
+    }
 
 
 
@@ -41,6 +47,8 @@ public class TimerViewModel() : ViewModel, IEntry
 
     private Dictionary<string, string>? _properties;
     private ObservableCollection<SessionRecord>? _sessions;
+
+    public TimeSpan EntryTimeElapsed => Elapsed;
 
     public TimeSpan Elapsed
     {
@@ -88,7 +96,6 @@ public class TimerViewModel() : ViewModel, IEntry
     }
 
 
-
     public bool Rename(string name)
     {
         var parent = Directory.GetParent(EntryPath);
@@ -122,6 +129,34 @@ public class TimerViewModel() : ViewModel, IEntry
         _sessions!.Add(new SessionRecord(timestamp, duration));
         Elapsed += TimeSpan.FromSeconds(duration);
         Save();
+    }
+
+    private Dictionary<string, string> ReadProperties()
+    {
+        var properties = new Dictionary<string, string>();
+
+        using var lines = File
+            .ReadLines(Path)
+            .GetEnumerator();
+
+        while (lines.MoveNext())
+        {
+            var line = lines.Current.Trim();
+            if (line == "")
+            {
+                break;
+            }
+
+            var pair = line.Split(SeparatorProperty);
+            if (pair.Length != 2)
+            {
+                throw new Exception($"Expected property declaration. [property]{SeparatorProperty}[value]");
+            }
+
+            properties[pair[0]] = pair[1];
+        }
+
+        return properties;
     }
 
     private void ReadFile()

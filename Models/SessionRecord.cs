@@ -31,7 +31,12 @@ public record SessionRecord(DateTime Timestamp, int Duration)
 
 
 
-    public string Template => ToString();
+    public string Template =>
+        Timestamp.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture)
+        + " - "
+        + TimeSpan.FromSeconds(Duration).ToString(@"hh\:mm\:ss");
+
+
 
     public override string ToString()
     {

@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using axion.Utils;
+using axion.Views.Components;
 using axion.Views.Modals;
 
 namespace axion.Views.WizardSteps;
@@ -38,7 +39,7 @@ public partial class TimerCreateStep : UserControl, IWizardStep
         }
 
         File.WriteAllText(
-            System.IO.Path.Join(Path, ViewModel.Name + ".txt"),
+            System.IO.Path.Join(Path, ViewModel.Name + "." + TimerViewModel.FileExtension),
             "");
 
         return true;

@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using axion.Utils;
+using axion.Views.Components;
 using axion.Views.Modals;
 
 namespace axion.Views.WizardSteps;
@@ -36,7 +37,11 @@ public partial class DirectoryCreateStep : UserControl, IWizardStep
             return false;
         }
 
-        Directory.CreateDirectory(System.IO.Path.Join(Path, ViewModel.Name));
+        var dir = System.IO.Path.Join(Path, ViewModel.Name);
+        Directory.CreateDirectory(dir);
+        File.WriteAllText(
+            System.IO.Path.Join(dir, "." + DirectoryViewModel.MetaFileExtension),
+            "");
         return true;
     }
 }
