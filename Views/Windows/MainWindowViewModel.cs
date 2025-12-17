@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
+using axion.Models;
 using axion.Utils;
 using axion.Views.Components;
 using axion.Views.Modals;
@@ -21,14 +22,49 @@ public class MainWindowViewModel : ViewModel
         set => SetProperty(ref _selectedTimer, value);
     }
 
+
     public ObservableCollection<IEntry> Entries { get; } = [];
     private IEntry? _selectedEntry;
 
     public IEntry? SelectedEntry
     {
         get => _selectedEntry;
-        set => SetProperty(ref _selectedEntry, value);
+        set
+        {
+            if (!SetProperty(ref _selectedEntry, value))
+            {
+                return;
+            }
+
+            NoneVisibility = Visibility.Collapsed;
+            TimerVisibility = Visibility.Collapsed;
+            DirectoryVisibility = Visibility.Collapsed;
+
+            switch (value)
+            {
+                case null:
+                    NoneVisibility = Visibility.Visible;
+                    break;
+
+                case TimerViewModel:
+                    TimerVisibility = Visibility.Visible;
+                    break;
+
+                case DirectoryViewModel:
+                    DirectoryVisibility = Visibility.Visible;
+                    break;
+            }
+
+            OnPropertyChanged(nameof(SelectedTimerViewModel));
+            OnPropertyChanged(nameof(Sessions));
+        }
     }
+
+
+    public TimerViewModel? SelectedTimerViewModel => SelectedEntry as TimerViewModel;
+    public ObservableCollection<SessionRecord> Sessions
+        => SelectedTimerViewModel?.Sessions ?? [];
+
 
     private string? _loadedDirectoryName;
 
@@ -37,6 +73,7 @@ public class MainWindowViewModel : ViewModel
         get => _loadedDirectoryName;
         private set => SetProperty(ref _loadedDirectoryName, value);
     }
+
 
     private DirectoryViewModel? _loadedDirectory;
 
@@ -49,6 +86,7 @@ public class MainWindowViewModel : ViewModel
             OnPropertyChanged(nameof(CanGoBack));
         }
     }
+
 
     public string CurrentPath
     {
@@ -63,6 +101,30 @@ public class MainWindowViewModel : ViewModel
                 ? LoadedDirectory.EntryPath
                 : projectPath;
         }
+    }
+
+
+    private Visibility _noneVisibility = Visibility.Visible;
+    public Visibility NoneVisibility
+    {
+        get => _noneVisibility;
+        set => SetProperty(ref _noneVisibility, value);
+    }
+
+
+    private Visibility _directoryVisibility = Visibility.Collapsed;
+    public Visibility DirectoryVisibility
+    {
+        get => _directoryVisibility;
+        set => SetProperty(ref _directoryVisibility, value);
+    }
+
+
+    private Visibility _timerVisibility = Visibility.Collapsed;
+    public Visibility TimerVisibility
+    {
+        get => _timerVisibility;
+        set => SetProperty(ref _timerVisibility, value);
     }
 
     #endregion
@@ -178,6 +240,7 @@ public class MainWindowViewModel : ViewModel
 
     private void TimerRemoveCommand(object? obj)
     {
+        SelectedTimer!.TimerViewModel.RecordSession(SelectedTimer.Elapsed.Seconds);
         Timers.Remove(SelectedTimer!);
     }
 

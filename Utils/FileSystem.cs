@@ -1,4 +1,7 @@
-﻿namespace axion.Utils;
+﻿using System.Collections;
+using System.IO;
+
+namespace axion.Utils;
 
 public class FileSystem
 {

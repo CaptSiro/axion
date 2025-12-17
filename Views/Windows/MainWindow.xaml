@@ -6,6 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:windows="clr-namespace:axion.Views.Windows"
         xmlns:local="clr-namespace:axion.Views.Components"
+        xmlns:converters="clr-namespace:axion.Converters"
         mc:Ignorable="d"
         Title="Axion" Height="450" Width="800"
         Loaded="MainWindow_OnLoaded">
@@ -15,6 +16,7 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     </Window.Resources>
 
     <Grid>
@@ -95,16 +97,22 @@
         <!-- Center Panel -->
         <Border Grid.Column="1" Background="#FFFFFF" BorderBrush="Black" BorderThickness="1">
             <Grid>
-                <!-- State 1: Nothing selected -->
-                <TextBlock x:Name="NoSelectionMessage"
-                           Text="Select something to show details"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"
-                           Visibility="Collapsed" />
+                <TextBlock
+                    x:Name="NoSelectionMessage"
+                    Text="Select something to show details"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Visibility="{Binding NoneVisibility}" />
 
-                <!-- State 2: Folder selected -->
-                <StackPanel x:Name="FolderDetails" Margin="12" Visibility="Collapsed">
-                    <TextBlock Text="Folder Name" FontSize="16" FontWeight="Bold" Margin="0 0 0 12" />
+                <!-- State 2: Directory selected -->
+                <StackPanel
+                    Visibility="{Binding DirectoryVisibility}"
+                    x:Name="DirectoryDetails"
+                    Margin="12">
+                    <TextBlock
+                        Text="{Binding SelectedEntry.EntryName, FallbackValue=''}"
+                        FontSize="16" FontWeight="Bold" Margin="0 0 0 12">
+                    </TextBlock>
 
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <Grid>
@@ -130,26 +138,32 @@
                     </ScrollViewer>
                 </StackPanel>
 
-                <!-- State 3: File/Item selected -->
-                <StackPanel x:Name="ItemDetails" Margin="12" Visibility="Visible">
-                    <TextBlock Text="Item Name" FontSize="16" FontWeight="Bold" Margin="0 0 0 12" />
+                <!-- State 3: Timer selected -->
+                <StackPanel
+                    x:Name="TimerDetails"
+                    Visibility="{Binding TimerVisibility}"
+                    Margin="12">
+                    <TextBlock
+                        Text="{Binding SelectedEntry.EntryName, FallbackValue=''}"
+                        FontSize="16" FontWeight="Bold" Margin="0 0 0 12">
+                    </TextBlock>
 
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <ListView>
-                            <!-- <ListView.View> -->
-                            <!--     <GridView> -->
-                            <!--         <GridViewColumn Header="Date & Time" DisplayMemberBinding="{Binding DateTime}" -->
-                            <!--                         Width="150" /> -->
-                            <!--         <GridViewColumn Header="Duration" DisplayMemberBinding="{Binding Duration}" Width="120" /> -->
-                            <!--     </GridView> -->
-                            <!-- </ListView.View> -->
-                            <!-- Example dummy rows -->
-                            <ListViewItem>
-                                <TextBlock Text="1/1/2025 16:31 -> 1h25m04s" />
-                            </ListViewItem>
-                            <ListViewItem>
-                                <TextBlock Text="1/3/2025 11:06 -> 10m44s" />
-                            </ListViewItem>
+                        <ListView
+                            ItemsSource="{Binding Sessions}"
+                            Visibility="{Binding SelectedTimerViewModel,
+                               Converter={StaticResource NullToVisibilityConverter}}">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Template}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
                         </ListView>
                     </ScrollViewer>
                 </StackPanel>

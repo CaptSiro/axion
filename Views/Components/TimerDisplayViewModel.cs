@@ -10,6 +10,7 @@ public class TimerDisplayViewModel : ViewModel
     private DispatcherTimer _dispatcher;
 
     public string ElapsedTime => TimerViewModel.EntryName + " - " + _elapsed.ToString(@"mm\:ss");
+    public TimeSpan Elapsed => _elapsed;
     public bool IsRunning { get; private set; }
 
 
