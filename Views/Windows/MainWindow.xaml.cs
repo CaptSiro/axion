@@ -46,14 +46,10 @@ public partial class MainWindow : Window
             return;
         }
 
-        var path = DirectoryModal.SelectDirectory(this);
-        if (path == null)
+        if (MainWindowViewModel.OpenProject(this) == null)
         {
             Application.Current.Shutdown();
-            return;
         }
-
-        Storage.Set(Constants.KeyProjectPath, path);
     }
 
     private void ListBoxItem_DoubleClick(object sender, MouseButtonEventArgs e)

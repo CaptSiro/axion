@@ -9,12 +9,15 @@
         WindowStartupLocation="CenterOwner"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
-        Title="Rename">
+        Title="Rename"
+        Background="{DynamicResource AppBackground1}"
+        Foreground="{DynamicResource AppForeground0}">
+
     <Window.DataContext>
         <windows:RenameModalViewModel />
     </Window.DataContext>
 
-    <Grid Margin="12">
+    <Grid Margin="12" Background="{DynamicResource AppBackground1}">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
@@ -34,7 +37,7 @@
                 Command="{Binding Ok}"
                 CommandParameter="{Binding ElementName=RenameModalWindow}"
                 Content="OK" Width="70" Margin="0 0 8 0" IsDefault="True" />
-            <Button
+            <Button Style="{StaticResource DangerButton}"
                 Command="{Binding Cancel}"
                 CommandParameter="{Binding ElementName=RenameModalWindow}"
                 Content="Cancel" Width="70" IsCancel="True" />

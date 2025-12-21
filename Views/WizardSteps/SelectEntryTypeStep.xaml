@@ -14,16 +14,18 @@
         <wizardSteps:SelectEntryTypeStepViewModel />
     </UserControl.DataContext>
 
-    <Grid>
+    <Grid Background="{DynamicResource AppBackground1}">
         <StackPanel Margin="20">
-            <TextBlock Text="Choose type:" FontSize="16" Margin="0 0 0 12" />
+            <TextBlock Text="Choose type:" FontSize="16" Margin="0 0 0 12" Foreground="{DynamicResource AppForeground1}" />
 
             <RadioButton
+                Foreground="{DynamicResource AppForeground1}"
                 Content="Directory"
                 GroupName="types"
                 IsChecked="{Binding SelectedType, Converter={StaticResource EnumConverter}, ConverterParameter=Directory}" />
 
             <RadioButton
+                Foreground="{DynamicResource AppForeground1}"
                 Content="Timer"
                 GroupName="types"
                 IsChecked="{Binding SelectedType, Converter={StaticResource EnumConverter}, ConverterParameter=Timer}" />

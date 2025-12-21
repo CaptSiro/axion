@@ -95,19 +95,19 @@ public class DirectoryViewModel : ViewModel, IEntry
 
     public TimeSpan Max => _max ??= TimeSpan.FromSeconds(
             GetTimers()
-                .Max(x => x.EntryTimeElapsed.Seconds));
+                .Max(x => x.EntryTimeElapsed.TotalSeconds));
 
     private TimeSpan? _min;
 
     public TimeSpan Min => _min ??= TimeSpan.FromSeconds(
         GetTimers()
-            .Min(x => x.EntryTimeElapsed.Seconds));
+            .Min(x => x.EntryTimeElapsed.TotalSeconds));
 
     private TimeSpan? _average;
 
     public TimeSpan Average => _average ??= TimeSpan.FromSeconds(
         GetTimers()
-            .Average(x => x.EntryTimeElapsed.Seconds));
+            .Average(x => x.EntryTimeElapsed.TotalSeconds));
 
     private int? _count;
 

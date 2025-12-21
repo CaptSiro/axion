@@ -6,6 +6,7 @@ using axion.Utils;
 using axion.Views.Components;
 using axion.Views.Modals;
 using axion.Views.WizardSteps;
+using Microsoft.Win32;
 
 namespace axion.Views.Windows;
 
@@ -242,8 +243,61 @@ public class MainWindowViewModel : ViewModel
 
     private void TimerRemoveCommand(object? obj)
     {
-        SelectedTimer!.TimerViewModel.RecordSession(SelectedTimer.Elapsed.Seconds);
+        SelectedTimer!.TimerViewModel.RecordSession(SelectedTimer.Duration);
         Timers.Remove(SelectedTimer!);
+    }
+
+
+    private RelayCommand<Window>? _setProject;
+    public RelayCommand<Window> SetProject
+        => _setProject ??= new RelayCommand<Window>(SetProjectCommand, _ => true);
+
+    public static string? OpenProject(Window win)
+    {
+        var path = DirectoryModal.SelectDirectory(win);
+        if (path == null)
+        {
+            return null;
+        }
+
+        Storage.Set(Constants.KeyProjectPath, path);
+        return path;
+    }
+
+    public static void SetProjectCommand(Window win)
+    {
+        OpenProject(win);
+    }
+
+
+    private RelayCommand<Window>? _exit;
+    public RelayCommand<Window> Exit
+        => _exit ??= new RelayCommand<Window>(ExitCommand, _ => true);
+
+    public static void ExitCommand(Window win)
+    {
+        Application.Current.Shutdown();
+    }
+
+
+    private RelayCommand<string>? _setTheme;
+    public RelayCommand<string> SetTheme
+        => _setTheme ??= new RelayCommand<string>(SetThemeCommand, SetThemeCanExecute);
+
+    public static void SetThemeCommand(string theme)
+    {
+        var dict = new ResourceDictionary { Source = new Uri(theme, UriKind.Absolute) };
+
+        Application.Current.Resources.MergedDictionaries.Clear();
+        Application.Current.Resources.MergedDictionaries.Add(dict);
+
+        Storage.Set(Constants.KeyTheme, theme);
+    }
+
+    public static bool SetThemeCanExecute(string theme)
+    {
+        return !Storage.Contains(Constants.KeyTheme)
+               || Storage.Get<string>(Constants.KeyTheme) != theme;
     }
 
     #endregion
@@ -264,6 +318,26 @@ public class MainWindowViewModel : ViewModel
     public void OnLoad(Window window)
     {
         Load(Storage.Get<string>(Constants.KeyProjectPath));
+
+        if (!Storage.Contains(Constants.KeyTheme))
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(
+                @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize");
+            if (key == null)
+            {
+                return;
+            }
+
+            var value = key.GetValue("AppsUseLightTheme");
+            var isDarkTheme = value != null && (int)value == 0; // 0 = Dark
+            SetThemeCommand(isDarkTheme
+                ? "pack://application:,,,/Themes/Dark.xaml"
+                : "pack://application:,,,/Themes/Light.xaml");
+        }
+        else
+        {
+            SetThemeCommand(Storage.Get<string>(Constants.KeyTheme)!);
+        }
     }
 
     private void Load(string? path)

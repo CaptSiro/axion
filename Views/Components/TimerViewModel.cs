@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using axion.Models;
 
@@ -71,7 +72,8 @@ public class TimerViewModel() : ViewModel, IEntry
                 ReadFile();
             }
 
-            _properties![KeyElapsed] = value.Seconds.ToString();
+            _properties![KeyElapsed] = value.TotalSeconds.ToString(CultureInfo.InvariantCulture);
+            OnPropertyChanged(nameof(EntryTimeElapsed));
         }
     }
 

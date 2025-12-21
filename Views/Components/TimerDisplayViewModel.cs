@@ -5,25 +5,29 @@ namespace axion.Views.Components;
 public class TimerDisplayViewModel : ViewModel
 {
     public TimerViewModel TimerViewModel { get; }
-    private TimeSpan _elapsed;
-    private EventHandler _tick;
-    private DispatcherTimer _dispatcher;
+    private readonly TimeSpan _elapsed;
+    private readonly EventHandler _tick;
+    private readonly DispatcherTimer _dispatcher;
 
-    public string ElapsedTime => TimerViewModel.EntryName + " - " + _elapsed.ToString(@"mm\:ss");
-    public TimeSpan Elapsed => _elapsed;
+    public string ElapsedTime =>
+        (_elapsed + TimeSpan.FromSeconds(Duration)).ToString(@"mm\:ss") + " - " + TimerViewModel.EntryName;
+
+    public int Duration { get; private set; }
+
     public bool IsRunning { get; private set; }
 
 
 
     public TimerDisplayViewModel(TimerViewModel timer, DispatcherTimer dispatcher)
     {
+        Duration = 0;
         TimerViewModel = timer;
         _elapsed = timer.Elapsed;
         _dispatcher = dispatcher;
 
-        _tick = (s, e) =>
+        _tick = (_, _) =>
         {
-            _elapsed = _elapsed.Add(TimeSpan.FromSeconds(1));
+            Duration++;
             OnPropertyChanged(nameof(ElapsedTime));
         };
 

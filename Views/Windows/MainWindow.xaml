@@ -9,7 +9,9 @@
         xmlns:converters="clr-namespace:axion.Converters"
         mc:Ignorable="d"
         Title="Axion" Height="450" Width="800"
-        Loaded="MainWindow_OnLoaded">
+        Loaded="MainWindow_OnLoaded"
+        Background="{DynamicResource AppBackground0}"
+        Foreground="{DynamicResource AppForeground0}">
     <Window.DataContext>
         <windows:MainWindowViewModel />
     </Window.DataContext>
@@ -19,18 +21,45 @@
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{DynamicResource AppBackground1}">
         <Grid.ColumnDefinitions>
-            <!-- Left panel: fixed width -->
             <ColumnDefinition Width="200" />
-            <!-- Center panel: fills remaining space -->
             <ColumnDefinition Width="*" />
-            <!-- Right panel: fixed width -->
             <ColumnDefinition Width="200" />
         </Grid.ColumnDefinitions>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.ColumnSpan="3">
+            <MenuItem Header="_File">
+                <MenuItem
+                    Header="Open Project"
+                    Command="{Binding SetProject}"
+                    CommandParameter="{Binding ElementName=MainWindowWindow}" />
+                <Separator/>
+                <MenuItem
+                    Header="Exit"
+                    Command="{Binding Exit}"
+                    CommandParameter="{Binding ElementName=MainWindowWindow}" />
+            </MenuItem>
+
+            <MenuItem Header="_View">
+                <MenuItem
+                    Header="Light Mode"
+                    Command="{Binding SetTheme}"
+                    CommandParameter="pack://application:,,,/Themes/Light.xaml" />
+                <MenuItem
+                    Header="Dark Mode"
+                    Command="{Binding SetTheme}"
+                    CommandParameter="pack://application:,,,/Themes/Dark.xaml" />
+            </MenuItem>
+        </Menu>
+
         <!-- Left Panel -->
-        <Border Grid.Column="0" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1">
+        <Border Grid.Row="1" Grid.Column="0" BorderBrush="Black" BorderThickness="1">
             <DockPanel LastChildFill="True">
                 <!-- Folder name header -->
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="8" VerticalAlignment="Center">
@@ -57,6 +86,7 @@
                         CommandParameter="{Binding ElementName=MainWindowWindow}"
                         Content="Rename" Margin="4,0" Width="50" />
                     <Button
+                        Style="{StaticResource DangerButton}"
                         Command="{Binding EntryDelete}"
                         CommandParameter="{Binding ElementName=MainWindowWindow}"
                         Content="Delete" Margin="4,0" Width="50" />
@@ -76,16 +106,16 @@
                             <!-- Directory item template -->
                             <DataTemplate DataType="{x:Type local:DirectoryViewModel}">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="📁" Margin="0,0,6,0" />
-                                    <TextBlock Text="{Binding EntryName}" />
+                                    <TextBlock Text="📁" Margin="0,0,6,0" Foreground="{DynamicResource AppForeground1}" />
+                                    <TextBlock Text="{Binding EntryName}" Foreground="{DynamicResource AppForeground1}" />
                                 </StackPanel>
                             </DataTemplate>
 
                             <!-- Timer item template -->
                             <DataTemplate DataType="{x:Type local:TimerViewModel}">
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="⏱" Margin="0,0,6,0" />
-                                    <TextBlock Text="{Binding EntryName}" />
+                                    <TextBlock Text="⏱" Margin="0,0,6,0" Foreground="{DynamicResource AppForeground1}" />
+                                    <TextBlock Text="{Binding EntryName}" Foreground="{DynamicResource AppForeground1}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.Resources>
@@ -95,21 +125,78 @@
         </Border>
 
         <!-- Center Panel -->
-        <Border Grid.Column="1" Background="#FFFFFF" BorderBrush="Black" BorderThickness="1">
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="Black" BorderThickness="1">
             <Grid>
                 <!-- State 1: None -->
-                <TextBlock
-                    x:Name="NoSelectionMessage"
-                    Text="Select something to show details"
+                <StackPanel
+                    Visibility="{Binding NoneVisibility}"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Visibility="{Binding NoneVisibility}" />
+                    VerticalAlignment="Center">
+
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Opacity" Value="0"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding NoneVisibility}" Value="Visible">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+
+                    <TextBlock
+                        Foreground="{DynamicResource AppForeground2}"
+                        x:Name="NoSelectionMessage"
+                        Text="Select something to show details"/>
+                </StackPanel>
 
                 <!-- State 2: Directory selected -->
                 <StackPanel
                     Visibility="{Binding DirectoryVisibility}"
                     x:Name="DirectoryDetails"
                     Margin="12">
+
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Opacity" Value="0"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DirectoryVisibility}" Value="Visible">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+
                     <TextBlock
                         Text="{Binding SelectedEntry.EntryName, FallbackValue=''}"
                         FontSize="16" FontWeight="Bold" Margin="0 0 0 12">
@@ -162,6 +249,33 @@
                     x:Name="TimerDetails"
                     Visibility="{Binding TimerVisibility}"
                     Margin="12">
+
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Setter Property="Opacity" Value="0"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding TimerVisibility}" Value="Visible">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation To="1" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation To="0" Duration="0:0:0.2" Storyboard.TargetProperty="Opacity"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+
                     <TextBlock
                         Text="{Binding SelectedEntry.EntryName, FallbackValue=''}"
                         FontSize="16" FontWeight="Bold" Margin="0 0 0 12">
@@ -184,8 +298,9 @@
                             ItemsSource="{Binding Sessions}"
                             Visibility="{Binding SelectedTimerViewModel,
                                Converter={StaticResource NullToVisibilityConverter}}">
+
                             <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
+                                <Style TargetType="ListViewItem" BasedOn="{StaticResource ListItem}">
                                     <Setter Property="IsHitTestVisible" Value="False"/>
                                 </Style>
                             </ListView.ItemContainerStyle>
@@ -202,7 +317,7 @@
         </Border>
 
         <!-- Right Panel -->
-        <Border Grid.Column="2" Background="#E0E0E0" BorderBrush="Black" BorderThickness="1">
+        <Border Grid.Row="1" Grid.Column="2" BorderBrush="Black" BorderThickness="1">
             <DockPanel LastChildFill="True">
                 <!-- Header -->
                 <TextBlock Text="Timers" FontWeight="Bold" Padding="8" DockPanel.Dock="Top" />
@@ -213,6 +328,7 @@
                         Command="{Binding TimerToggle}"
                         Content="▶/⏸" Width="50" Margin="4,0" />
                     <Button
+                        Style="{StaticResource DangerButton}"
                         Command="{Binding TimerRemove}"
                         Content="■" Width="50" Margin="4,0" />
                 </StackPanel>
@@ -225,7 +341,7 @@
                         Margin="4">
                         <ListBox.Resources>
                             <DataTemplate DataType="{x:Type local:TimerDisplayViewModel}">
-                                <TextBlock Text="{Binding ElapsedTime}" />
+                                <TextBlock Text="{Binding ElapsedTime}" Foreground="{DynamicResource AppForeground1}" />
                             </DataTemplate>
                         </ListBox.Resources>
                     </ListBox>

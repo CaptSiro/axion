@@ -9,12 +9,15 @@
         WindowStartupLocation="CenterOwner"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
-        Title="Select Directory">
+        Title="Select Directory"
+        Background="{DynamicResource AppBackground1}"
+        Foreground="{DynamicResource AppForeground0}">
+
     <Window.DataContext>
         <directoryModal:DirectoryModalViewModel />
     </Window.DataContext>
 
-    <Grid Margin="12">
+    <Grid Margin="12" Background="{DynamicResource AppBackground1}">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
@@ -34,9 +37,11 @@
                 Command="{Binding Ok}"
                 CommandParameter="{Binding ElementName=DirectoryModalWindow}"
                 Content="OK" Width="70" Margin="0 0 8 0" IsDefault="True" />
-            <Button Command="{Binding Cancel}"
-                    CommandParameter="{Binding ElementName=DirectoryModalWindow}"
-                    Content="Cancel" Width="70" IsCancel="True" />
+            <Button
+                Style="{StaticResource DangerButton}"
+                Command="{Binding Cancel}"
+                CommandParameter="{Binding ElementName=DirectoryModalWindow}"
+                Content="Cancel" Width="70" IsCancel="True" />
         </StackPanel>
     </Grid>
 </Window>

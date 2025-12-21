@@ -9,12 +9,15 @@
     mc:Ignorable="d"
     Title="Create Entry" Height="400" Width="500"
     WindowStartupLocation="CenterOwner"
-    ResizeMode="NoResize">
+    ResizeMode="NoResize"
+    Background="{DynamicResource AppBackground0}"
+    Foreground="{DynamicResource AppForeground0}">
+
     <Window.DataContext>
         <modals:CreateEntryModalViewModel />
     </Window.DataContext>
 
-    <Grid>
+    <Grid Background="{DynamicResource AppBackground1}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -33,7 +36,7 @@
 
         <!-- Navigation -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="12">
-            <Button
+            <Button Style="{StaticResource DangerButton}"
                 Command="{Binding BackCommand}"
                 Content="Back"
                 Width="70"
@@ -46,6 +49,5 @@
                 Width="90"
                 Margin="4"/>
         </StackPanel>
-
     </Grid>
 </Window>
