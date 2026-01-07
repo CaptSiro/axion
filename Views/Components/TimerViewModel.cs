@@ -106,7 +106,7 @@ public class TimerViewModel() : ViewModel, IEntry
             return false;
         }
 
-        File.Move(EntryPath, System.IO.Path.Join(parent.ToString(), name + ".txt"));
+        File.Move(EntryPath, System.IO.Path.Join(parent.ToString(), name + "." + FileExtension));
         return true;
     }
 

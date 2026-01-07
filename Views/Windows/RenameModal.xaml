@@ -1,4 +1,4 @@
-﻿<Window x:Class="axion.Views.Modals.RenameModal"
+﻿<Window x:Class="axion.Views.Windows.RenameModal"
         x:Name="RenameModalWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

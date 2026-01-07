@@ -33,10 +33,8 @@ public class RenameModalViewModel : ViewModel
 
     private RelayCommand<Window>? _ok;
 
-    public RelayCommand<Window> Ok
-    {
-        get { return _ok ??= new RelayCommand<Window>(OkCommand, OkCanExecute); }
-    }
+    public RelayCommand<Window> Ok =>
+        _ok ??= new RelayCommand<Window>(OkCommand, OkCanExecute);
 
     private bool OkCanExecute(Window window)
     {
@@ -55,10 +53,8 @@ public class RenameModalViewModel : ViewModel
 
     private RelayCommand<Window>? _cancel;
 
-    public RelayCommand<Window> Cancel
-    {
-        get { return _cancel ??= new RelayCommand<Window>(CancelCommand, _ => true); }
-    }
+    public RelayCommand<Window> Cancel =>
+        _cancel ??= new RelayCommand<Window>(CancelCommand, _ => true);
 
     private static void CancelCommand(Window window)
     {

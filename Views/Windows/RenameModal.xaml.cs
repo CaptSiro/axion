@@ -1,7 +1,6 @@
 ﻿using System.Windows;
-using axion.Views.Windows;
 
-namespace axion.Views.Modals;
+namespace axion.Views.Windows;
 
 public partial class RenameModal
 {
